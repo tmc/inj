@@ -59,7 +59,9 @@ func (inj Injector) RegisterAs(value interface{}, registeredType interface{}) (b
 }
 
 // Call invokes fun with parameters populated by registered types
-func (inj Injector) Call(fun interface{}) ([]reflect.Value, error) {
+//
+// The optional additionalScopes can supply additional Injector instances to use for lookups
+func (inj Injector) Call(fun interface{}, additionalScopes ...Injector) ([]reflect.Value, error) {
 	fv := reflect.ValueOf(fun)
 	ft := fv.Type()
 
@@ -70,9 +72,14 @@ func (inj Injector) Call(fun interface{}) ([]reflect.Value, error) {
 	parameters := make([]reflect.Value, ft.NumIn())
 	// TODO: handle variadic functions
 	for i := 0; i < ft.NumIn(); i++ {
-		var ok bool
-		if parameters[i], ok = inj[ft.In(i)]; !ok {
-			return nil, fmt.Errorf("Could not look up type %s for argument %d for %T\nmap:%#v", ft.In(i), i, fun, inj)
+		scopes := append([]Injector{inj}, additionalScopes...)
+		for d, inj := range scopes {
+			if val, ok := inj[ft.In(i)]; ok {
+				parameters[i] = val
+				break
+			} else if d == len(scopes)-1 {
+				return nil, fmt.Errorf("Could not look up type %s for argument %d for %T\nmap:%+v", ft.In(i), i, fun, inj)
+			}
 		}
 	}
 

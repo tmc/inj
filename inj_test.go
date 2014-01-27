@@ -88,3 +88,19 @@ func TestRegisteringInterfaceErrors(t *testing.T) {
 		t.Errorf("Expected inj.ErrDoesntImplement, got %v", err)
 	}
 }
+
+func TestAdditionalScope(t *testing.T) {
+	i1, i2 := inj.New(), inj.New()
+
+	i1.Register(42)
+	i2.Register(43)
+	vals, err := i1.Call(func(theAnswer int) bool {
+		return theAnswer == 42
+	}, i2)
+	if err != nil {
+		t.Errorf("Got unexpected error: %v", err)
+	}
+	if vals[0].Bool() != true {
+		t.Errorf("Scope lookup failure")
+	}
+}
