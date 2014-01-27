@@ -12,7 +12,7 @@ var (
 	// ErrNotInterface is returned by RegisterAs() if the second argument is not an interface type
 	ErrNotInterface = errors.New("inj: Provided value is not an interface type")
 	// ErrDoesntImplement is returned by RegisterAs() if the first argument does not implement the second argument
-	ErrDoesntImplement = errors.New("inj: Provided value does not specify provided interface")
+	ErrDoesntImplement = errors.New("inj: Provided value does not satisfy provided interface")
 )
 
 // Injector is the type to value mapping that is utilized when looking up parameters in Call()
@@ -25,7 +25,7 @@ func New() Injector {
 
 // Register provides a new implementation for a provided type
 //
-// Returns true if this registration is replacing a previous regisration
+// Returns true if this registration is replacing a previous registration
 func (inj Injector) Register(value interface{}) (replaced bool) {
 	_, replaced = inj[reflect.TypeOf(value)]
 	inj[reflect.TypeOf(value)] = reflect.ValueOf(value)
@@ -35,7 +35,7 @@ func (inj Injector) Register(value interface{}) (replaced bool) {
 // RegisterAs provides a new implementation for a provided type but attempts to register it as
 // the interface type registeredType. registeredType must be supplied as a pointer to the interface type.
 //
-// Returns true if this registration is replacing a previous regisration
+// Returns true if this registration is replacing a previous registration
 // Returns an error if the second argument isn't an interface or the first argument doesn't satisify the second.
 //
 // Example:
