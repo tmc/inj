@@ -36,6 +36,8 @@ func (inj Injector) Register(value interface{}) (replaced bool) {
 // the interface type registeredType. registeredType must be supplied as a pointer to the interface type.
 //
 // Returns true if this registration is replacing a previous regisration
+// Returns an error if the second argument isn't an interface or the first argument doesn't satisify the second.
+//
 // Example:
 //  i := inj.New()
 //  i.RegisterAs(os.Stdin, (*io.Reader)(nil))

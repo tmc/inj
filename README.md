@@ -5,9 +5,13 @@ Package inj provides a simple mechanism of dependency injection
 
 It combines a type to value map and the capability of invoking a function with parameters supplied based on their types.
 
+- godoc: http://godoc.org/github.com/tmc/inj
+- Coverage: 100%
+- License: ISC
+
 Example:
 
-
+```go
 	i := inj.New()
 	i.Register("foobar")
 	i.Register(42)
@@ -18,10 +22,7 @@ Example:
 	fmt.Print(vals)
 	// Output:
 	// [int:42 string:foobar]
-
-- godoc: http://godoc.org/github.com/tmc/inj
-- Coverage: 100%
-- License: ISC
+```
 
 ## Variables
 ```go
@@ -31,20 +32,11 @@ var (
 )
 ```
 
-
 ## type Injector
 ```go
 type Injector map[reflect.Type]reflect.Value
 ```
 Injector is the type to value mapping that is utilized when looking up parameters in Call()
-
-
-
-
-
-
-
-
 
 ### func New
 ```go
@@ -52,19 +44,14 @@ func New() Injector
 ```
 New prepares a new Injector
 
-
-
-
 ### func (Injector) Call
 ```go
 func (inj Injector) Call(fun interface{}) ([]reflect.Value, error)
 ```
 Call invokes fun with parameters populated by registered types
 
-
-
 ### func (Injector) Register
-```go
+``` go
 func (inj Injector) Register(value interface{}) (replaced bool)
 ```
 Register provides a new implementation for a provided type
@@ -72,7 +59,19 @@ Register provides a new implementation for a provided type
 Returns true if this registration is replacing a previous regisration
 
 
+### func (Injector) RegisterAs
+``` go
+func (inj Injector) RegisterAs(value interface{}, registeredType interface{}) (bool, error)
+```
+RegisterAs provides a new implementation for a provided type but attempts to register it as
+the interface type registeredType. registeredType must be supplied as a pointer to the interface type.
 
+Returns true if this registration is replacing a previous regisration.
+Returns an error if the second argument isn't an interface or the first argument doesn't satisify the second.
 
+Example:
 
-
+```go
+	i := inj.New()
+	i.RegisterAs(os.Stdin, (*io.Reader)(nil))
+```
