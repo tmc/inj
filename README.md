@@ -29,6 +29,10 @@ Example:
 var (
     // ErrNotFunc is returned by Call() if the provided value is not a function
     ErrNotFunc = errors.New("inj: Provided value is not a function")
+    // ErrNotInterface is returned by RegisterAs() if the second argument is not an interface type
+    ErrNotInterface = errors.New("inj: Provided value is not an interface type")
+    // ErrDoesntImplement is returned by RegisterAs() if the first argument does not implement the second argument
+    ErrDoesntImplement = errors.New("inj: Provided value does not specify provided interface")
 )
 ```
 
