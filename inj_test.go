@@ -2,6 +2,8 @@ package inj_test
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"testing"
 
 	"github.com/tmc/inj"
@@ -21,6 +23,17 @@ func ExampleInjector_Call() {
 	fmt.Print(vals)
 	// Output:
 	// [int:42 string:foobar]
+}
+
+func ExampleInjector_RegisterAs() {
+	i := inj.New()
+	i.RegisterAs(os.Stdout, (*io.Writer)(nil))
+
+	i.Call(func(w io.Writer) {
+		w.Write([]byte("hello world\n"))
+	})
+	// Output:
+	// hello world
 }
 
 func TestCallWithoutFunc(t *testing.T) {
@@ -75,4 +88,3 @@ func TestRegisteringInterfaceErrors(t *testing.T) {
 		t.Errorf("Expected inj.ErrDoesntImplement, got %v", err)
 	}
 }
-
