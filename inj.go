@@ -78,7 +78,11 @@ func (inj Injector) Call(fun interface{}, additionalScopes ...Injector) ([]refle
 				parameters[i] = val
 				break
 			} else if d == len(scopes)-1 {
-				return nil, fmt.Errorf("Could not look up type %s for argument %d for %T\nmap:%+v", ft.In(i), i, fun, inj)
+				scopesStr := ""
+				for _, s := range scopes {
+					scopesStr += fmt.Sprintf("\n%+v", s)
+				}
+				return nil, fmt.Errorf("Could not look up type %s for argument %d for %T\nscopes:%s", ft.In(i), i, fun, scopesStr)
 			}
 		}
 	}
