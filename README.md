@@ -1,3 +1,5 @@
+# This was a bad idea. Don't do this.
+
 # inj
     import "github.com/tmc/inj"
 
